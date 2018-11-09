@@ -4,33 +4,28 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Kata5 {
     
     public static void main(String[] args) throws IOException{ 
-        connect();
+        createNewTable();
     }
     
-    private static void connect() {
-        Connection conn = null;
-        try {
-            // parámetros de la BD
-            String url = "jdbc:sqlite:Kata5.db";
-            // creamos una conexión a la BD
-            conn = DriverManager.getConnection(url);
-            System.out.println("Connexión a SQLite establecida");
-            SelectApp app = new SelectApp();
-            app.selectAll();
+    public static void createNewTable() {
+        // Cadena de conexión SQLite
+        String url = "jdbc:sqlite:mail.db";
+        // Instrucción SQL para crear nueva tabla
+        String sql = "CREATE TABLE IF NOT EXISTS direcc_email (\n"
+                + " id integer PRIMARY KEY AUTOINCREMENT,\n"
+                + " direccion text NOT NULL);";
+        try (Connection conn = DriverManager.getConnection(url);
+            Statement stmt = conn.createStatement()) {
+            // Se crea la nueva tabla
+            stmt.execute(sql);
+            System.out.println("Tabla creada");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-            }
         }
     }
 }
